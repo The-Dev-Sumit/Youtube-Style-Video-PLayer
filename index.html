@@ -81,14 +81,28 @@
 <link href="https://fonts.googleapis.com/css2?family=Allan:wght@400;700&family=Anton+SC&family=Aref+Ruqaa+Ink:wght@400;700&family=Bebas+Neue&family=Bungee+Spice&family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=DM+Serif+Text:ital@0;1&family=Days+One&family=Delius+Unicase:wght@400;700&family=Eagle+Lake&family=Fira+Mono:wght@400;500;700&family=Ga+Maamli&family=Lemon&family=Lemonada:wght@300..700&family=Momo+Trust+Display&family=Poetsen+One&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Righteous&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Rowdies:wght@300;400;700&family=Rubik+Glitch&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Winky+Rough:ital,wght@0,300..900;1,300..900&family=Yatra+One&display=swap" rel="stylesheet">
 </head>
 <body class="bg-neutral-900 text-white flex flex-col gap-20 items-center min-h-screen">
-    <div class="h-16 w-full flex items-center bg-red-600 justify-between px-10 ">
-        <span class="flex items-center justify-center space-x-4"><h1 class="text-2xl roboto-condensed-good">YouTube Mere</h1> 
-        <img title="lode pe" class="h-14 w-14 rounded-full" src="https://res.cloudinary.com/dmmzqpfgg/image/upload/v1765281662/Screenshot_2025-12-09_172917_vntkhv.png" alt="Lode pe"></span>
-        <span class="flex items-center justify-center space-x-4">
-            <h1 class="text-2xl roboto-condensed-good">The Great Sumit For A Reason</h1>
-        </span>
-        
-    </div>
+    <div class="w-full bg-red-600  px-4 sm:px-4 lg:px-10">
+  <div class="h-16 w-full flex flex-row justify-between sm:flex-row items-center sm:justify-between space-x-5">
+    <span class="flex items-center justify-center space-x-3">
+      <h1 class="text-lg sm:text-xl lg:text-2xl roboto-condensed-good">
+        YouTube Mere
+      </h1>
+      <img
+        title="lode pe"
+        class="h-10 w-10 sm:h-12 sm:w-12 lg:h-14 lg:w-14 rounded-full object-cover"
+        src="https://res.cloudinary.com/dmmzqpfgg/image/upload/v1765281662/Screenshot_2025-12-09_172917_vntkhv.png"
+        alt="Lode pe"
+      >
+    </span>
+    <span class="flex items-center justify-center mt-1 sm:mt-0">
+      <h1 class="text-sm sm:text-lg lg:text-2xl text-center roboto-condensed-good">
+        The Great Sumit For A Reason
+      </h1>
+    </span>
+
+  </div>
+</div>
+
 
   <div id="playerContainer" class="w-full max-w-4xl player relative group rounded-xl overflow-hidden bg-black aspect-video flex items-center">
     
@@ -97,6 +111,20 @@
     </video>
 
     <div id="loader" class="absolute inset-0 m-auto w-16 h-16 border-4 border-white/20 border-t-red-600 rounded-full animate-spin hidden z-0 pointer-events-none"></div>
+
+    <div id="rippleLeft" class="absolute top-0 left-0 bottom-0 w-1/3 flex items-center justify-center bg-white/10 opacity-0 pointer-events-none transition-opacity duration-300 z-10">
+        <div class="flex flex-col items-center text-white">
+            <i class="fa-solid fa-backward text-3xl mb-1"></i>
+            <span class="text-xs font-bold">-10s</span>
+        </div>
+    </div>
+
+    <div id="rippleRight" class="absolute top-0 right-0 bottom-0 w-1/3 flex items-center justify-center bg-white/10 opacity-0 pointer-events-none transition-opacity duration-300 z-10">
+        <div class="flex flex-col items-center text-white">
+            <i class="fa-solid fa-forward text-3xl mb-1"></i>
+            <span class="text-xs font-bold">+10s</span>
+        </div>
+    </div>
 
     <button title="play" id="bigPlay"
       class="absolute inset-0 m-auto w-20 h-20 flex items-center justify-center 
@@ -171,6 +199,8 @@
     const settingsBtn = document.getElementById("settingsBtn"); 
     const settingsMenu = document.getElementById("settingsMenu"); 
     const loader = document.getElementById("loader");
+    const rippleLeft = document.getElementById("rippleLeft");
+    const rippleRight = document.getElementById("rippleRight");
     
     // Preview Elements
     const progressContainer = document.getElementById("progressContainer");
@@ -222,6 +252,44 @@
         updateProgressBackground(percent);
       }
     });
+
+    playerContainer.addEventListener("dblclick", (e) => {
+        // Agar user ne Controls par click kiya hai to ignore karo
+        if (e.target.closest(".controls")) return;
+
+        const rect = playerContainer.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const width = rect.width;
+
+        // RIGHT SIDE (Skip Forward) -> Agar click right ke 35% hisse me hai
+        if (clickX > width * 0.65) {
+            video.currentTime += 10;
+            animateRipple(rippleRight);
+        } 
+        // LEFT SIDE (Skip Backward) -> Agar click left ke 35% hisse me hai
+        else if (clickX < width * 0.35) {
+            video.currentTime -= 10;
+            animateRipple(rippleLeft);
+        }
+        // CENTER: Double click in center usually toggles Fullscreen (Optional)
+        else {
+           // Agar center me double click par fullscreen chahiye to ye uncomment karo:
+           // fullScreenBtn.click();
+        }
+    });
+
+    // Animation Function
+    function animateRipple(element) {
+        // 1. Show
+        element.style.opacity = "1";
+        element.style.transform = "scale(1.2)"; // Thoda bada karo
+        
+        // 2. Hide after 500ms
+        setTimeout(() => {
+            element.style.opacity = "0";
+            element.style.transform = "scale(1)";
+        }, 500);
+    }
 
     //  FULLSCREEN LOGIC 
     fullScreenBtn.addEventListener("click", () => {
