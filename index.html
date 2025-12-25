@@ -23,6 +23,12 @@
         transition: opacity 0.25s ease;
       }
 
+     html::-webkit-scrollbar {
+  display: none;
+}
+
+
+
       .roboto-condensed-good {
         font-family: "Roboto Condensed", sans-serif;
         font-optical-sizing: auto;
@@ -710,7 +716,7 @@
           div.innerHTML = `
                 <div class="text-xs font-mono bg-neutral-900 text-gray-400 px-1.5 py-0.5 rounded group-hover:text-white border border-white/10">${timeStr}</div>
                 <div class="flex-1">
-                    <h4 class="text-sm text-gray-300 font-medium group-hover:text-red-400 transition">${chap.title}</h4>
+                    <h4 class="text-sm text-gray-300 font-medium group-hover:text-green-400 transition">${chap.title}</h4>
                 </div>
             `;
           // Store ID for highlighting
