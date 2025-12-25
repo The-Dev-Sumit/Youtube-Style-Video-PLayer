@@ -1,259 +1,795 @@
-<!Doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Guidance</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://kit.fontawesome.com/ca4ae39440.js" crossorigin="anonymous"></script>
-  <style>
-    /* YT-like hide/show controls */
-    .player:hover .controls,
-    .player.paused .controls,
-    .player.settings-active .controls {
-      opacity: 1;
-    }
-    .controls {
-      opacity: 0;
-      transition: opacity 0.25s ease;
-    }
-    
-.roboto-condensed-good {
-  font-family: "Roboto Condensed", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 600;
-  font-style: normal;
-}
-    /* --- CUSTOM RANGE INPUT STYLING --- */
-    #progress {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 100%;
-      height: 3px; 
-      cursor: pointer;
-      border-radius: 0;
-      background: rgba(255,255,255,0.2);
-      transition: height 0.1s ease;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Guidance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://kit.fontawesome.com/ca4ae39440.js"
+      crossorigin="anonymous"></script>
+    <style>
+      /* YT-like hide/show controls */
+      .player:hover .controls,
+      .player.paused .controls,
+      .player.settings-active .controls {
+        opacity: 1;
+      }
+      .player.show-controls .controls {
+        opacity: 1 !important;
+      }
+      .controls {
+        opacity: 0;
+        transition: opacity 0.25s ease;
+      }
 
-    /* Hover effect: Increase height */
-    .group\/bar:hover #progress { height: 5px; }
+      .roboto-condensed-good {
+        font-family: "Roboto Condensed", sans-serif;
+        font-optical-sizing: auto;
+        font-weight: 600;
+        font-style: normal;
+      }
+      /* --- CUSTOM RANGE INPUT STYLING --- */
+      #progress {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 3px;
+        cursor: pointer;
+        border-radius: 0;
+        background: rgba(255, 255, 255, 0.2);
+        transition: height 0.1s ease;
+      }
 
-    /* Thumb Styling */
-    #progress::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 12px;
-      height: 12px;
-      background: #ff0000;
-      border-radius: 50%;
-      margin-top: -3.5px; 
-      transform: scale(0); 
-      transition: transform 0.1s;
-    }
+      /* Hover effect: Increase height */
+      .group\/bar:hover #progress {
+        height: 5px;
+      }
 
-    .group\/bar:hover #progress::-webkit-slider-thumb { transform: scale(1); }
-    #progress:active::-webkit-slider-thumb { transform: scale(1.3); }
+      /* Thumb Styling */
+      #progress::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 12px;
+        height: 12px;
+        background: #ff0000;
+        border-radius: 50%;
+        margin-top: -3.5px;
+        transform: scale(0);
+        transition: transform 0.1s;
+      }
 
-    #progress::-webkit-slider-runnable-track {
-      background: transparent;
-      height: 100%;
-      border: none;
-    }
+      .group\/bar:hover #progress::-webkit-slider-thumb {
+        transform: scale(1);
+      }
+      #progress:active::-webkit-slider-thumb {
+        transform: scale(1.3);
+      }
 
-    /* Settings Menu Animation */
-    #settingsMenu {
+      #progress::-webkit-slider-runnable-track {
+        background: transparent;
+        height: 100%;
+        border: none;
+      }
+
+      /* Settings Menu Animation */
+      #settingsMenu {
         transition: all 0.2s ease;
         transform-origin: bottom right;
-    }
-    .hidden-menu {
+      }
+      .hidden-menu {
         opacity: 0;
         transform: scale(0.9);
         pointer-events: none;
-    }
-    .visible-menu {
+      }
+      .visible-menu {
         opacity: 1;
         transform: scale(1);
         pointer-events: auto;
-    }
-  </style>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Allan:wght@400;700&family=Anton+SC&family=Aref+Ruqaa+Ink:wght@400;700&family=Bebas+Neue&family=Bungee+Spice&family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=DM+Serif+Text:ital@0;1&family=Days+One&family=Delius+Unicase:wght@400;700&family=Eagle+Lake&family=Fira+Mono:wght@400;500;700&family=Ga+Maamli&family=Lemon&family=Lemonada:wght@300..700&family=Momo+Trust+Display&family=Poetsen+One&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Righteous&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Rowdies:wght@300;400;700&family=Rubik+Glitch&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Winky+Rough:ital,wght@0,300..900;1,300..900&family=Yatra+One&display=swap" rel="stylesheet">
-</head>
-<body class="bg-neutral-900 text-white flex flex-col gap-20 items-center min-h-screen">
-    <div class="w-full bg-red-600  px-4 sm:px-4 lg:px-10">
-  <div class="h-16 w-full flex flex-row justify-between sm:flex-row items-center sm:justify-between space-x-5">
-    <span class="flex items-center justify-center space-x-3">
-      <h1 class="text-lg sm:text-xl lg:text-2xl roboto-condensed-good">
-        YouTube Mere
-      </h1>
-      <img
-        title="lode pe"
-        class="h-10 w-10 sm:h-12 sm:w-12 lg:h-14 lg:w-14 rounded-full object-cover"
-        src="https://res.cloudinary.com/dmmzqpfgg/image/upload/v1765281662/Screenshot_2025-12-09_172917_vntkhv.png"
-        alt="Lode pe"
-      >
-    </span>
-    <span class="flex items-center justify-center mt-1 sm:mt-0">
-      <h1 class="text-sm sm:text-lg lg:text-2xl text-center roboto-condensed-good">
-        The Great Sumit For A Reason
-      </h1>
-    </span>
+      }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Allan:wght@400;700&family=Anton+SC&family=Aref+Ruqaa+Ink:wght@400;700&family=Bebas+Neue&family=Bungee+Spice&family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=DM+Serif+Text:ital@0;1&family=Days+One&family=Delius+Unicase:wght@400;700&family=Eagle+Lake&family=Fira+Mono:wght@400;500;700&family=Ga+Maamli&family=Lemon&family=Lemonada:wght@300..700&family=Momo+Trust+Display&family=Poetsen+One&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Righteous&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Rowdies:wght@300;400;700&family=Rubik+Glitch&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Winky+Rough:ital,wght@0,300..900;1,300..900&family=Yatra+One&display=swap"
+      rel="stylesheet" />
 
-  </div>
-</div>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  </head>
+  <body
+    class="bg-neutral-900 text-white flex flex-col gap-20 items-center min-h-screen">
+    <div class="w-full bg-red-600 px-4 sm:px-4 lg:px-10">
+      <div
+        class="h-16 w-full flex flex-row justify-between sm:flex-row items-center sm:justify-between space-x-5">
+        <span class="flex items-center justify-center space-x-3">
+          <h1 class="text-lg sm:text-xl lg:text-2xl roboto-condensed-good">
+            YouTube Mere
+          </h1>
+          <div class="relative group h-10 w-10 sm:h-12 sm:w-12 lg:h-14 lg:w-14">
+            <img
+              src="https://res.cloudinary.com/dmmzqpfgg/image/upload/v1765281662/Screenshot_2025-12-09_172917_vntkhv.png"
+              class="absolute inset-0 h-full w-full rounded-full object-cover group-hover:opacity-0 transition-opacity duration-200"
+              alt="Static" />
 
+            <img
+              src="https://res.cloudinary.com/dmmzqpfgg/image/upload/v1766689189/ambani-bhot-paisa-hai-ezgif.com-effects_1_qj0siz.gif"
+              class="absolute inset-0 h-full w-full rounded-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+              alt="GIF" />
+          </div>
+        </span>
+        <span class="flex items-center justify-center mt-1 sm:mt-0">
+          <h1
+            class="text-sm sm:text-lg lg:text-2xl text-center roboto-condensed-good">
+            The Great Sumit For A Reason
+          </h1>
+        </span>
+      </div>
+    </div>
 
-  <div id="playerContainer" class="w-full max-w-4xl player relative group rounded-xl overflow-hidden bg-black aspect-video flex items-center">
-    
-    <video id="video" class="w-full h-full object-contain" crossorigin="anonymous" 
-      src="https://res.cloudinary.com/dmmzqpfgg/video/upload/v1750228307/Uivora_Promotional_Video_e3sasw.mp4">
-    </video>
+    <div
+      class="w-full h-full max-w-[1400px] px-4 flex flex-col lg:flex-row gap-6 items-start justify-center">
+      <div
+        id="playerContainer"
+        class="w-full max-w-4xl lg:w-[60%] player relative group rounded-xl overflow-hidden bg-black aspect-video flex items-center">
+        <video
+          id="video"
+          class="w-full h-full object-contain"
+          crossorigin="anonymous"
+          src=""
+          poster="https://res.cloudinary.com/dmmzqpfgg/image/upload/v1766584291/Session_thumb_mcjr98.png"></video>
 
-    <div id="loader" class="absolute inset-0 m-auto w-16 h-16 border-4 border-white/20 border-t-red-600 rounded-full animate-spin hidden z-0 pointer-events-none"></div>
+        <div
+          id="loader"
+          class="absolute inset-0 m-auto w-16 h-16 border-4 border-white/20 border-t-red-600 rounded-full animate-spin hidden z-0 pointer-events-none"></div>
 
-    <div id="rippleLeft" class="absolute top-0 left-0 bottom-0 w-1/3 flex items-center justify-center bg-white/10 opacity-0 pointer-events-none transition-opacity duration-300 z-10">
-        <div class="flex flex-col items-center text-white">
+        <div
+          id="rippleLeft"
+          class="absolute top-0 left-0 bottom-0 w-1/3 flex items-center justify-center bg-white/10 opacity-0 pointer-events-none transition-opacity duration-300 z-10">
+          <div class="flex flex-col items-center text-white">
             <i class="fa-solid fa-backward text-3xl mb-1"></i>
             <span class="text-xs font-bold">-10s</span>
+          </div>
         </div>
-    </div>
 
-    <div id="rippleRight" class="absolute top-0 right-0 bottom-0 w-1/3 flex items-center justify-center bg-white/10 opacity-0 pointer-events-none transition-opacity duration-300 z-10">
-        <div class="flex flex-col items-center text-white">
+        <div
+          id="rippleRight"
+          class="absolute top-0 right-0 bottom-0 w-1/3 flex items-center justify-center bg-white/10 opacity-0 pointer-events-none transition-opacity duration-300 z-10">
+          <div class="flex flex-col items-center text-white">
             <i class="fa-solid fa-forward text-3xl mb-1"></i>
             <span class="text-xs font-bold">+10s</span>
+          </div>
         </div>
-    </div>
 
-    <button title="play" id="bigPlay"
-      class="absolute inset-0 m-auto w-20 h-20 flex items-center justify-center 
-             bg-black/50 rounded-full text-4xl cursor-pointer z-10 transition hover:bg-black/70">
-      <i class="fa-solid fa-play ml-1"></i>
-    </button>
+        <button
+          title="play"
+          id="bigPlay"
+          class="absolute inset-0 m-auto w-20 h-20 flex items-center justify-center bg-black/50 rounded-full text-4xl cursor-pointer z-10 transition hover:bg-black/70">
+          <i class="fa-solid fa-play ml-1"></i>
+        </button>
 
-    <div id="settingsMenu" class="hidden-menu absolute bottom-16 right-4 bg-black/90 text-white p-2 rounded-lg border border-white/10 w-48 z-40 shadow-xl backdrop-blur-sm font-sans text-sm">
-        <div class="px-3 py-2 border-b border-white/10 font-bold mb-1 text-gray-400">Quality</div>
-        <button onclick="changeQuality('1080p')" class="w-full text-left px-3 py-2 hover:bg-white/20 rounded flex justify-between">
-            <span>1080p HD</span> <span id="check-1080p" class="text-red-500 opacity-0">✓</span>
-        </button>
-        <button onclick="changeQuality('720p')" class="w-full text-left px-3 py-2 hover:bg-white/20 rounded flex justify-between">
-            <span>720p</span> <span id="check-720p" class="text-red-500 opacity-0">✓</span>
-        </button>
-        <button onclick="changeQuality('480p')" class="w-full text-left px-3 py-2 hover:bg-white/20 rounded flex justify-between">
-            <span>480p</span> <span id="check-480p" class="text-red-500 opacity-0">✓</span>
-        </button>
-        <button onclick="changeQuality('360p')" class="w-full text-left px-3 py-2 hover:bg-white/20 rounded flex justify-between">
-            <span>360p</span> <span id="check-360p" class="text-red-500 opacity-0">✓</span>
-        </button>
-    </div>
+        <div
+          id="settingsMenu"
+          class="hidden-menu absolute bottom-14 right-4 bg-black/90 text-white rounded-lg border border-white/10 w-48 z-50 shadow-xl backdrop-blur-sm text-sm transition-all duration-200 origin-bottom-right overflow-hidden">
+          <div id="menu-main" class="w-full">
+            <div
+              class="px-3 py-2 border-b border-white/10 font-bold mb-1 text-gray-400 text-xs uppercase">
+              Settings
+            </div>
 
-    <div class="controls absolute bottom-0 left-0 right-0 
-                bg-gradient-to-t from-black/90 via-black/60 to-transparent pt-10 pb-2 px-3 space-y-2 z-20">
+            <button
+              onclick="showMenu('quality')"
+              class="w-full text-left px-3 py-2 hover:bg-white/20 flex justify-between items-center">
+              <span class="flex items-center gap-2"
+                ><i class="fa-solid fa-sliders"></i> Quality</span
+              >
+              <div class="flex items-center gap-2">
+                <span id="currentQualityText" class="text-xs text-gray-400"
+                  >Auto</span
+                >
+                <i class="fa-solid fa-chevron-right text-xs"></i>
+              </div>
+            </button>
 
-      <div id="progressContainer" class="relative w-full h-auto flex items-end group/bar py-2 cursor-pointer">
-          
-          <div id="previewTooltip" class="absolute bottom-8 left-0 hidden flex-col items-center bg-black p-1 rounded border border-white/20 shadow-xl z-30 pointer-events-none transform -translate-x-1/2 mb-2">
-              <canvas id="previewCanvas" width="160" height="90" class="rounded bg-gray-800 mb-1"></canvas>
-              <div id="previewTime" class="text-xs font-bold font-sans text-center">0:00</div>
+            <button
+              onclick="showMenu('audio')"
+              class="w-full text-left px-3 py-2 hover:bg-white/20 flex justify-between items-center">
+              <span class="flex items-center gap-2"
+                ><i class="fa-solid fa-headphones"></i> Audio</span
+              >
+              <i class="fa-solid fa-chevron-right text-xs"></i>
+            </button>
           </div>
 
-          <input title="video progress" id="progress" type="range" value="0" min="0" max="100" step="0.1"
-          class="w-full z-20 relative">
-      </div>
-
-      <div class="flex items-center justify-between text-sm font-medium">
-        <div class="flex items-center gap-4">
-          <button title="play & pause" id="playPause" class="text-xl w-6 hover:text-gray-300"><i class="fa-solid fa-play ml-1"></i></button>
-          
-           <button title="backward" id="back10" class="hover:text-gray-300"><i class="fa-solid fa-angles-left"></i></button>
-           <button title="forward" id="forward10" class="hover:text-gray-300"><i class="fa-solid fa-angles-right"></i></button>
-
-          <div class="flex items-center gap-2 group/vol">
-             <i class="fa-solid fa-volume-high"></i>
-             <input title="volume meter" id="volume" type="range" min="0" max="1" step="0.05" value="1"
-              class="w-20 h-1 accent-white cursor-pointer">
+          <div id="menu-quality" class="w-full hidden">
+            <div
+              class="px-3 py-2 border-b border-white/10 font-bold mb-1 text-gray-400 text-xs uppercase flex items-center gap-2 cursor-pointer hover:text-white"
+              onclick="showMenu('main')">
+              <i class="fa-solid fa-chevron-left"></i> Back
+            </div>
+            <button
+              onclick="changeQuality('1080p')"
+              class="w-full text-left px-3 py-2 hover:bg-white/20 flex justify-between">
+              <span>1080p</span>
+              <span id="check-1080p" class="text-red-500 opacity-0">✓</span>
+            </button>
+            <button
+              onclick="changeQuality('720p')"
+              class="w-full text-left px-3 py-2 hover:bg-white/20 flex justify-between">
+              <span>720p</span>
+              <span id="check-720p" class="text-red-500 opacity-0">✓</span>
+            </button>
+            <button
+              onclick="changeQuality('480p')"
+              class="w-full text-left px-3 py-2 hover:bg-white/20 flex justify-between">
+              <span>480p</span>
+              <span id="check-480p" class="text-red-500 opacity-0">✓</span>
+            </button>
+            <button
+              onclick="changeQuality('360p')"
+              class="w-full text-left px-3 py-2 hover:bg-white/20 flex justify-between">
+              <span>360p</span>
+              <span id="check-360p" class="text-red-500 opacity-0">✓</span>
+            </button>
           </div>
 
-          <div id="time" class="text-xs text-gray-300 tabular-nums">0:00 / 0:00</div>
+          <div id="menu-audio" class="w-full hidden">
+            <div
+              class="px-3 py-2 border-b border-white/10 font-bold mb-1 text-gray-400 text-xs uppercase flex items-center gap-2 cursor-pointer hover:text-white"
+              onclick="showMenu('main')">
+              <i class="fa-solid fa-chevron-left"></i> Back
+            </div>
+            <button
+              onclick="changeAudio('hindi')"
+              class="w-full text-left px-3 py-2 hover:bg-white/20 flex justify-between">
+              <span>Hindi</span>
+              <span id="audio-hindi" class="text-red-500 opacity-100">✓</span>
+            </button>
+            <button
+              onclick="changeAudio('english')"
+              class="w-full text-left px-3 py-2 hover:bg-white/20 flex justify-between">
+              <span>English</span>
+              <span id="audio-english" class="text-red-500 opacity-0">✓</span>
+            </button>
+          </div>
         </div>
 
-        <div class="flex items-center gap-4">
-            <button title="Setting button" id="settingsBtn" class="hover:text-white text-gray-300 transition transform hover:rotate-45"><i class="fa-solid fa-gear"></i></button>
-            <button id="fullScreenBtn" title="fullscreen button" class="hover:text-white text-gray-300"><i class="fa-solid fa-expand"></i></button>
+        <div
+          class="controls absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent pt-10 pb-2 px-3 space-y-2 z-20">
+          <div
+            id="progressContainer"
+            class="relative w-full h-auto flex items-end group/bar py-2 cursor-pointer">
+            <div
+              id="previewTooltip"
+              class="absolute bottom-8 left-0 hidden flex-col items-center bg-black p-1 rounded border border-white/20 shadow-xl z-30 pointer-events-none transform -translate-x-1/2 mb-2">
+              <canvas
+                id="previewCanvas"
+                width="160"
+                height="90"
+                class="rounded bg-gray-800 mb-1"></canvas>
+              <div
+                id="previewTime"
+                class="text-xs font-bold font-sans text-center">
+                0:00
+              </div>
+            </div>
+
+            <input
+              title="video progress"
+              id="progress"
+              type="range"
+              value="0"
+              min="0"
+              max="100"
+              step="0.1"
+              class="w-full z-20 relative" />
+          </div>
+
+          <div class="flex items-center justify-between text-sm font-medium">
+            <div class="flex items-center gap-4">
+              <button
+                title="play & pause"
+                id="playPause"
+                class="text-xl w-6 hover:text-gray-300">
+                <i class="fa-solid fa-play ml-1"></i>
+              </button>
+
+              <button title="backward" id="back10" class="hover:text-gray-300">
+                <i class="fa-solid fa-angles-left"></i>
+              </button>
+              <button
+                title="forward"
+                id="forward10"
+                class="hover:text-gray-300">
+                <i class="fa-solid fa-angles-right"></i>
+              </button>
+
+              <div class="flex items-center gap-2 group/vol">
+                <i class="fa-solid fa-volume-high"></i>
+                <input
+                  title="volume meter"
+                  id="volume"
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.05"
+                  value="1"
+                  class="w-20 h-1 accent-white cursor-pointer" />
+              </div>
+
+              <div id="time" class="text-xs text-gray-300 tabular-nums">
+                0:00 / 0:00
+              </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+              <button
+                id="ccBtn"
+                class="hover:text-white text-gray-300 transition font-bold text-xs border border-gray-400 rounded px-1 py-0.5 mr-2">
+                CC
+              </button>
+              <button
+                title="Setting button"
+                id="settingsBtn"
+                class="hover:text-white text-gray-300 transition transform hover:rotate-45">
+                <i class="fa-solid fa-gear"></i>
+              </button>
+              <button
+                id="fullScreenBtn"
+                title="fullscreen button"
+                class="hover:text-white text-gray-300">
+                <i class="fa-solid fa-expand"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="w-full md:w-[50%] md:ml-[12rem] lg:ml-0 lg:w-[30%] bg-neutral-800/20 rounded-xl border border-white/10 flex flex-col h-full lg:h-full shadow-lg">
+        <div
+          class="bg-neutral-700/50 p-3 border-b border-white/5 flex justify-between items-center">
+          <h2 class="font-bold text-gray-200">Chapters</h2>
+          <span class="text-xs text-gray-400" id="chapterCount">0 items</span>
+        </div>
+
+        <div
+          id="chaptersList"
+          class="flex-1 overflow-y-auto custom-scroll p-0"></div>
+      </div>
+    </div>
+    <h2>Scroll Down</h2>
+    <div
+      class="max-w-4xl mx-auto bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 border border-gray-700 rounded-3xl p-10 shadow-2xl">
+      <h2 class="text-3xl font-bold text-white tracking-wide mb-3">
+        Project Ideas
+      </h2>
+
+      <p class="text-gray-400 text-sm max-w-xl mb-8">
+        This is for those who can build projects but struggle to find good and
+        meaningful ideas.
+      </p>
+
+      <!-- Ideas Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-300 text-sm">
+        <div
+          class="bg-gray-800/70 hover:bg-gray-700/70 transition rounded-xl px-4 py-3">
+          Attendance System
+        </div>
+
+        <div
+          class="bg-gray-800/70 hover:bg-gray-700/70 transition rounded-xl px-4 py-3">
+          Online Feedback System
+        </div>
+
+        <div
+          class="bg-gray-800/70 hover:bg-gray-700/70 transition rounded-xl px-4 py-3">
+          Online Movie Ticket Booking
+        </div>
+
+        <div
+          class="bg-gray-800/70 hover:bg-gray-700/70 transition rounded-xl px-4 py-3">
+          Language Learning App
+        </div>
+
+        <div
+          class="bg-gray-800/70 hover:bg-gray-700/70 transition rounded-xl px-4 py-3">
+          Online Job Portal
+        </div>
+
+        <div
+          class="bg-gray-800/70 hover:bg-gray-700/70 transition rounded-xl px-4 py-3">
+          Daily Habit Tracker
+        </div>
+
+        <div
+          class="bg-gray-800/70 hover:bg-gray-700/70 transition rounded-xl px-4 py-3">
+          Online Blood Donation Finder
+        </div>
+
+        <div
+          class="bg-gray-800/70 hover:bg-gray-700/70 transition rounded-xl px-4 py-3">
+          Online Classroom Notice & Assignment Portal
+        </div>
+
+        <div
+          class="bg-gray-800/70 hover:bg-gray-700/70 transition rounded-xl px-4 py-3">
+          Turnitin-like Assignment Plagiarism Checker
+        </div>
+
+        <div
+          class="bg-gray-800/70 hover:bg-gray-700/70 transition rounded-xl px-4 py-3">
+          Online Complaint Status Tracker
+        </div>
+
+        <div
+          class="bg-gray-800/70 hover:bg-gray-700/70 transition rounded-xl px-4 py-3">
+          Online Room Allocation System
+        </div>
+
+        <div
+          class="bg-gray-800/70 hover:bg-gray-700/70 transition rounded-xl px-4 py-3">
+          Fast Typing Platform
         </div>
       </div>
     </div>
-  </div>
 
-  <script>
-    //  ELEMENTS 
-    const video = document.getElementById("video");
-    const playPause = document.getElementById("playPause");
-    const progress = document.getElementById("progress");
-    const volume = document.getElementById("volume");
-    const time = document.getElementById("time");
-    const bigPlay = document.getElementById("bigPlay");
-    const playerContainer = document.getElementById("playerContainer"); 
-    const fullScreenBtn = document.getElementById("fullScreenBtn");
-    const settingsBtn = document.getElementById("settingsBtn"); 
-    const settingsMenu = document.getElementById("settingsMenu"); 
-    const loader = document.getElementById("loader");
-    const rippleLeft = document.getElementById("rippleLeft");
-    const rippleRight = document.getElementById("rippleRight");
-    
-    // Preview Elements
-    const progressContainer = document.getElementById("progressContainer");
-    const previewTooltip = document.getElementById("previewTooltip");
-    const previewCanvas = document.getElementById("previewCanvas");
-    const previewTime = document.getElementById("previewTime");
-    const ctx = previewCanvas.getContext("2d");
+    <script>
+      // Hindi Chapters
+      const chaptersHindi = [
+        { time: 45, title: "How to find Guide?" },
+        { time: 120, title: "Who can be your Guide?" },
+        { time: 154, title: "No Experience letter issue" },
+        { time: 182, title: "How to Convince Guide?" },
+        { time: 259, title: "Attached Files/Images means?" },
+        { time: 346, title: "What & How can I make Project" },
+        { time: 425, title: "Synopsis" },
+        { time: 465, title: "Placement" },
+        { time: 518, title: "Advise for you Jobs/Lay-offs" },
+      ];
 
-    // GHOST VIDEO SETUP
-    const ghostVideo = document.createElement("video");
-    ghostVideo.src = video.src; 
-    ghostVideo.muted = true;
-    ghostVideo.preload = "auto";
-    ghostVideo.crossOrigin = "anonymous";
+      // English Chapters
+      const chaptersEnglish = [
+        { time: 55, title: "How to find Guide?" },
+        { time: 132, title: "Who can be your Guide?" },
+        { time: 170, title: "No Experience letter issue" },
+        { time: 196, title: "How to Convince Guide?" },
+        { time: 272, title: "Attached Files/Images means?" },
+        { time: 337, title: "What & How can I make Project" },
+        { time: 394, title: "Synopsis" },
+        { time: 438, title: "Placement" },
+        { time: 462, title: "Advise for you Jobs/Lay-offs" },
+      ];
 
-    let isDragging = false;
+      // Default Current Chapters
+      let currentChapters = chaptersHindi;
 
-    function format(sec) {
-      if (!sec) return "0:00";
-      const m = Math.floor(sec / 60);
-      const s = Math.floor(sec % 60).toString().padStart(2, "0");
-      return `${m}:${s}`;
-    }
+      //  ELEMENTS
+      const video = document.getElementById("video");
+      const playPause = document.getElementById("playPause");
+      const progress = document.getElementById("progress");
+      const volume = document.getElementById("volume");
+      const time = document.getElementById("time");
+      const bigPlay = document.getElementById("bigPlay");
+      const playerContainer = document.getElementById("playerContainer");
+      const fullScreenBtn = document.getElementById("fullScreenBtn");
+      const settingsBtn = document.getElementById("settingsBtn");
+      const settingsMenu = document.getElementById("settingsMenu");
+      const loader = document.getElementById("loader");
+      const rippleLeft = document.getElementById("rippleLeft");
+      const rippleRight = document.getElementById("rippleRight");
 
-    function togglePlay() {
-      if (video.paused) video.play();
-      else video.pause();
-    }
+      // Preview Elements
+      const progressContainer = document.getElementById("progressContainer");
+      const previewTooltip = document.getElementById("previewTooltip");
+      const previewCanvas = document.getElementById("previewCanvas");
+      const previewTime = document.getElementById("previewTime");
+      const ctx = previewCanvas.getContext("2d");
+      const chaptersListEl = document.getElementById("chaptersList");
 
-    //  COLOR UPDATE FUNCTION 
-    function updateProgressBackground(value) {
-      const percent = value !== undefined ? value : ((progress.value - progress.min) / (progress.max - progress.min) * 100);
-      progress.style.background = `linear-gradient(to right, #ff0000 ${percent}%, rgba(255, 255, 255, 0.2) ${percent}%)`;
-    }
+      let hls;
+      let isDragging = false;
+      let previewTimeout;
+      let isSwitchingSource = false;
+      let ghostHls;
 
-    //  VIDEO EVENTS 
-    video.addEventListener("loadedmetadata", () => {
+      const hindiVoice =
+        "https://bejewelled-pavlova-8d5072.netlify.app/master.m3u8";
+      const englishVoice =
+        "https://dreamy-marzipan-3c1516.netlify.app/master.m3u8";
+      const subtitleUrl =
+        "https://res.cloudinary.com/dmmzqpfgg/raw/upload/v1766568631/audio_subtitles_ywczwz.vtt";
+
+      let currentUrl = hindiVoice;
+
+      function initPlayer() {
+        if (Hls.isSupported()) {
+          hls = new Hls();
+          hls.loadSource(currentUrl);
+          hls.attachMedia(video);
+
+          hls.on(Hls.Events.MANIFEST_PARSED, function () {
+            console.log("HLS Loaded. Levels:", hls.levels);
+            hls.startLevel = 0; // Auto Quality
+            renderChapters();
+
+            video.querySelectorAll("track").forEach((t) => t.remove());
+
+            const track = document.createElement("track");
+            track.kind = "subtitles";
+            track.label = "English";
+            track.srclang = "en";
+            track.src = subtitleUrl;
+            track.default = false;
+            video.appendChild(track);
+          });
+
+          hls.on(Hls.Events.LEVEL_SWITCHED, function (event, data) {
+            const level = data.level; // Current Quality Level Index
+
+            // Mapping (Tumhare FFmpeg command ke hisaab se order)
+            // 0: 360p, 1: 480p, 2: 720p, 3: 1080p
+            let qualityLabel = "";
+            let qualityId = "";
+
+            if (level === 0) {
+              qualityLabel = "360p";
+              qualityId = "360p";
+            } else if (level === 1) {
+              qualityLabel = "480p";
+              qualityId = "480p";
+            } else if (level === 2) {
+              qualityLabel = "720p";
+              qualityId = "720p";
+            } else if (level === 3) {
+              qualityLabel = "1080p";
+              qualityId = "1080p";
+            }
+
+            console.log("Auto Quality Switched to:", qualityLabel);
+
+            // 1. Tick Mark Update karo
+            document
+              .querySelectorAll("[id^='check-']")
+              .forEach((el) => (el.style.opacity = "0"));
+            const tick = document.getElementById(`check-${qualityId}`);
+            if (tick) tick.style.opacity = "1";
+
+            // 2. Main Menu Text Update karo (Batana hai ki Auto hai)
+            const textEl = document.getElementById("currentQualityText");
+
+            // Check karo ki Auto Mode ON hai ya nahi
+            if (hls.autoLevelEnabled) {
+              textEl.textContent = `Auto (${qualityLabel})`; // User ko dikhega: "Auto (360p)"
+            } else {
+              textEl.textContent = qualityLabel; // Manual Mode: Sirf "360p"
+            }
+          });
+
+          ghostHls = new Hls();
+          ghostHls.loadSource(currentUrl);
+          ghostHls.attachMedia(ghostVideo);
+        }
+        // Safari Support
+        else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+          video.src = currentUrl;
+        }
+      }
+
+      // Nested Menu Show/Hide
+      function showMenu(menuName) {
+        // Sab chhupa do
+        document.getElementById("menu-main").classList.add("hidden");
+        document.getElementById("menu-quality").classList.add("hidden");
+        document.getElementById("menu-audio").classList.add("hidden");
+
+        // Jo chahiye wo dikhao
+        document.getElementById(`menu-${menuName}`).classList.remove("hidden");
+      }
+
+      // Audio Change Logic
+      window.changeAudio = function (lang) {
+        let newUrl = "";
+
+        // 1. Language Setup
+        if (lang === "hindi") {
+          newUrl = hindiVoice;
+          currentChapters = chaptersHindi;
+        } else if (lang === "english") {
+          newUrl = englishVoice;
+          currentChapters = chaptersEnglish;
+        }
+
+        if (newUrl === currentUrl) return;
+
+        // 2. CAPTURE PERCENTAGE (Switch hone se pehle)
+        // Yahi wo logic hai jo tum maang rahe ho
+        let savedPercent = 0;
+        if (video.duration > 0 && isFinite(video.duration)) {
+          savedPercent = video.currentTime / video.duration;
+        }
+
+        console.log(
+          `Switching Audio. Saved Position: ${Math.round(savedPercent * 100)}%`
+        );
+
+        // UI Updates
+        document.getElementById("audio-hindi").style.opacity =
+          lang === "hindi" ? "1" : "0";
+        document.getElementById("audio-english").style.opacity =
+          lang === "english" ? "1" : "0";
+        renderChapters();
+
+        // UI Freeze
+        isSwitchingSource = true;
+        loader.classList.remove("hidden");
+        time.textContent = "Syncing...";
+        currentUrl = newUrl;
+
+        if (ghostHls) {
+          ghostHls.loadSource(newUrl); // Ab preview bhi English wala dikhega
+        }
+
+        // 3. LOAD NEW SOURCE
+        if (hls) {
+          hls.stopLoad();
+          hls.loadSource(newUrl);
+
+          hls.once(Hls.Events.MANIFEST_PARSED, () => {
+            // 4. WAIT FOR NEW DURATION
+            const handleNewMetadata = () => {
+              const newDuration = video.duration;
+              if (!isFinite(newDuration) || newDuration <= 0) return;
+
+              // --- MAIN MAGIC: PERCENTAGE TO TIME ---
+              // Agar percentage mila tha, to us hisaab se jump karo
+              // Agar nahi mila (savedPercent 0 hai), to shuru se chalega
+              const targetTime = savedPercent * newDuration;
+
+              video.currentTime = targetTime;
+
+              // Play Resume
+              var p = video.play();
+              if (p) p.catch(() => {});
+
+              // UI Unlock
+              setTimeout(() => {
+                isSwitchingSource = false;
+                time.textContent = `${format(video.currentTime)} / ${format(
+                  newDuration
+                )}`;
+                loader.classList.add("hidden");
+              }, 500);
+
+              video.removeEventListener("loadedmetadata", handleNewMetadata);
+            };
+
+            video.addEventListener("loadedmetadata", handleNewMetadata);
+          });
+
+          hls.startLoad();
+        }
+        closeSettings();
+      };
+
+      // CC Button Logic (Show/Hide) -> Subtitles
+      const ccBtn = document.getElementById("ccBtn");
+      ccBtn.onclick = () => {
+        const track = video.textTracks[0];
+        if (!track) return;
+
+        if (track.mode === "showing") {
+          track.mode = "hidden";
+          ccBtn.style.color = "#d1d5db";
+          ccBtn.style.borderColor = "#9ca3af";
+          ccBtn.style.background = "transparent";
+        } else {
+          track.mode = "showing";
+          ccBtn.style.color = "black";
+          ccBtn.style.borderColor = "white";
+          ccBtn.style.background = "white"; // Active Indicator
+        }
+      };
+
+      // RENDER CHAPTERS
+      function renderChapters() {
+        document.getElementById(
+          "chapterCount"
+        ).textContent = `${currentChapters.length} items`;
+        chaptersListEl.innerHTML = "";
+
+        currentChapters.forEach((chap, index) => {
+          const div = document.createElement("div");
+          div.className =
+            "flex items-start gap-3 p-3 cursor-pointer hover:bg-white/5 transition border-b border-white/5 group chapter-item";
+          div.onclick = () => {
+            video.currentTime = chap.time;
+            video.play();
+          };
+
+          // Format time 00:00
+          const timeStr = format(chap.time);
+
+          div.innerHTML = `
+                <div class="text-xs font-mono bg-neutral-900 text-gray-400 px-1.5 py-0.5 rounded group-hover:text-white border border-white/10">${timeStr}</div>
+                <div class="flex-1">
+                    <h4 class="text-sm text-gray-300 font-medium group-hover:text-red-400 transition">${chap.title}</h4>
+                </div>
+            `;
+          // Store ID for highlighting
+          div.setAttribute("data-time", chap.time);
+          chaptersListEl.appendChild(div);
+        });
+      }
+
+      function updateActiveChapter(currentTime) {
+        const items = document.querySelectorAll(".chapter-item");
+        // Remove old active
+        items.forEach((i) => i.classList.remove("chapter-active"));
+
+        // Find current
+        // Hum reverse check karenge taaki sahi segment mile
+        let activeIdx = -1;
+        for (let i = 0; i < currentChapters.length; i++) {
+          if (currentTime >= currentChapters[i].time) activeIdx = i;
+        }
+
+        if (activeIdx !== -1 && items[activeIdx]) {
+          items[activeIdx].classList.add("chapter-active");
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        initPlayer();
+        renderChapters();
+      });
+
+      function format(sec) {
+        if (!sec) return "0:00";
+        const m = Math.floor(sec / 60);
+        const s = Math.floor(sec % 60)
+          .toString()
+          .padStart(2, "0");
+        return `${m}:${s}`;
+      }
+
+      function togglePlay() {
+        if (video.paused) video.play();
+        else video.pause();
+      }
+
+      //  COLOR UPDATE FUNCTION
+      function updateProgressBackground(value) {
+        const percent =
+          value !== undefined
+            ? value
+            : ((progress.value - progress.min) /
+                (progress.max - progress.min)) *
+              100;
+        progress.style.background = `linear-gradient(to right, #ff0000 ${percent}%, rgba(255, 255, 255, 0.2) ${percent}%)`;
+      }
+
+      //  VIDEO EVENTS
+      video.addEventListener("loadedmetadata", () => {
         time.textContent = `0:00 / ${format(video.duration)}`;
         updateProgressBackground(0);
-    });
+      });
 
-    video.addEventListener("timeupdate", () => {
-      if (!isDragging) {
-        const c = video.currentTime;
-        const d = video.duration || 0;
-        time.textContent = `${format(c)} / ${format(d)}`;
-        const percent = (c / d) * 100 || 0;
-        progress.value = percent;
-        updateProgressBackground(percent);
-      }
-    });
+      video.addEventListener("timeupdate", () => {
+        if (isSwitchingSource) return;
 
-    playerContainer.addEventListener("dblclick", (e) => {
+        if (video.currentTime > 0 && !video.paused && video.readyState > 2) {
+          loader.classList.add("hidden");
+        }
+        if (!isDragging) {
+          const c = video.currentTime;
+          const d = video.duration || 0;
+          time.textContent = `${format(c)} / ${format(d)}`;
+          const percent = (c / d) * 100 || 0;
+          progress.value = percent;
+          updateProgressBackground(percent);
+          updateActiveChapter(c);
+        }
+      });
+
+      playerContainer.addEventListener("dblclick", (e) => {
         // Agar user ne Controls par click kiya hai to ignore karo
         if (e.target.closest(".controls")) return;
 
@@ -263,226 +799,254 @@
 
         // RIGHT SIDE (Skip Forward) -> Agar click right ke 35% hisse me hai
         if (clickX > width * 0.65) {
-            video.currentTime += 10;
-            animateRipple(rippleRight);
-        } 
+          video.currentTime += 10;
+          animateRipple(rippleRight);
+        }
         // LEFT SIDE (Skip Backward) -> Agar click left ke 35% hisse me hai
         else if (clickX < width * 0.35) {
-            video.currentTime -= 10;
-            animateRipple(rippleLeft);
+          video.currentTime -= 10;
+          animateRipple(rippleLeft);
         }
         // CENTER: Double click in center usually toggles Fullscreen (Optional)
         else {
-           // Agar center me double click par fullscreen chahiye to ye uncomment karo:
-           // fullScreenBtn.click();
+          // Agar center me double click par fullscreen chahiye to ye uncomment karo:
+          // fullScreenBtn.click();
         }
-    });
+      });
 
-    // Animation Function
-    function animateRipple(element) {
+      // Animation Function
+      function animateRipple(element) {
         // 1. Show
         element.style.opacity = "1";
         element.style.transform = "scale(1.2)"; // Thoda bada karo
-        
+
         // 2. Hide after 500ms
         setTimeout(() => {
-            element.style.opacity = "0";
-            element.style.transform = "scale(1)";
+          element.style.opacity = "0";
+          element.style.transform = "scale(1)";
         }, 500);
-    }
+      }
 
-    //  FULLSCREEN LOGIC 
-    fullScreenBtn.addEventListener("click", () => {
+      //  FULLSCREEN LOGIC
+      fullScreenBtn.addEventListener("click", () => {
         if (!document.fullscreenElement) {
-            playerContainer.requestFullscreen().catch(err => {
-                console.log(`Error: ${err.message}`);
-            });
-            fullScreenBtn.innerHTML = '<i class="fa-solid fa-compress"></i>';
+          playerContainer.requestFullscreen().catch((err) => {
+            console.log(`Error: ${err.message}`);
+          });
+          fullScreenBtn.innerHTML = '<i class="fa-solid fa-compress"></i>';
         } else {
-            document.exitFullscreen();
-            fullScreenBtn.innerHTML = '<i class="fa-solid fa-expand"></i>';
+          document.exitFullscreen();
+          fullScreenBtn.innerHTML = '<i class="fa-solid fa-expand"></i>';
         }
-    });
+      });
 
-    document.addEventListener("fullscreenchange", () => {
+      document.addEventListener("fullscreenchange", () => {
         if (!document.fullscreenElement) {
-            fullScreenBtn.innerHTML = '<i class="fa-solid fa-expand"></i>';
+          fullScreenBtn.innerHTML = '<i class="fa-solid fa-expand"></i>';
         }
-    });
+      });
 
-    //  SETTINGS MENU 
-    settingsBtn.addEventListener("click", (e) => {
-        e.stopPropagation(); 
-        const isHidden = settingsMenu.classList.contains("hidden-menu");
+      //  SETTINGS MENU
+      settingsBtn.onclick = (e) => {
+        e.stopPropagation();
+
+        // Check karo ki menu chhupa hua hai ya nahi (using hidden-menu class)
+        const isHidden =
+          settingsMenu.classList.contains("hidden-menu") ||
+          settingsMenu.classList.contains("hidden");
+
         if (isHidden) {
-            settingsMenu.classList.remove("hidden-menu");
-            settingsMenu.classList.add("visible-menu");
-            playerContainer.classList.add("settings-active");
+          // OPEN MENU
+          settingsMenu.classList.remove(
+            "hidden-menu",
+            "hidden",
+            "opacity-0",
+            "pointer-events-none"
+          );
+          settingsMenu.classList.add("visible-menu");
+          playerContainer.classList.add("settings-active");
+          showMenu("main"); // Reset to main menu
         } else {
-            closeSettings();
+          // CLOSE MENU
+          closeSettings();
         }
-    });
+      };
 
-    function closeSettings() {
+      function closeSettings() {
         settingsMenu.classList.add("hidden-menu");
         settingsMenu.classList.remove("visible-menu");
         playerContainer.classList.remove("settings-active");
-    }
+      }
 
-    window.addEventListener("click", (e) => {
+      window.addEventListener("click", (e) => {
         if (!settingsMenu.contains(e.target) && e.target !== settingsBtn) {
-            closeSettings();
+          closeSettings();
         }
-    });
+      });
 
-    // Jab video data load kar raha ho (Waiting) -> Show Loader
-    video.addEventListener("waiting", () => {
+      // Jab video data load kar raha ho (Waiting) -> Show Loader
+      video.addEventListener("waiting", () => {
         loader.classList.remove("hidden");
-    });
+      });
 
-    // Jab video chalne lage (Playing) -> Hide Loader
-    video.addEventListener("playing", () => {
+      // Jab video chalne lage (Playing) -> Hide Loader
+      video.addEventListener("playing", () => {
         loader.classList.add("hidden");
-    });
+      });
 
-    // Jab user seek kare (Seeking) -> Show Loader
-    video.addEventListener("seeking", () => {
-        if(!video.paused) loader.classList.add("hidden");
-    });
+      // Jab user seek kare (Seeking) -> Show Loader
+      video.addEventListener("seeking", () => {
+        if (!video.paused) loader.classList.add("hidden");
+      });
 
-    // Jab seek complete ho jaye -> Hide Loader
-    video.addEventListener("seeked", () => {
+      // Jab seek complete ho jaye -> Hide Loader
+      video.addEventListener("seeked", () => {
         // Agar video pause nahi hai to loader hatao
-        if(!video.paused) loader.classList.add("hidden");
-    });
+        if (!video.paused) loader.classList.add("hidden");
+      });
 
-    // QUALITY CHANGE LOGIC 
-    window.changeQuality = function(quality) {
-        document.querySelectorAll("[id^='check-']").forEach(el => el.style.opacity = "0");
+      // QUALITY CHANGE LOGIC
+      window.changeQuality = function (quality) {
+        document
+          .querySelectorAll("[id^='check-']")
+          .forEach((el) => (el.style.opacity = "0"));
         document.getElementById(`check-${quality}`).style.opacity = "1";
-        
+
+        document.getElementById("currentQualityText").textContent = quality;
+
         const currentTime = video.currentTime;
         const wasPaused = video.paused;
-        
-        
-        let newUrl = "";
-        
-        if (quality === '1080p') {
-            newUrl = 'https://res.cloudinary.com/dmmzqpfgg/video/upload/v1750228307/Uivora_Promotional_Video_e3sasw.mp4'; 
-        } else if (quality === '720p') {
-            newUrl = 'https://res.cloudinary.com/dmmzqpfgg/video/upload/v1765277904/Uivora_Promotional_Video_720p_ifbikg.mp4';
-        } else if (quality === '480p') {
-            newUrl = 'https://res.cloudinary.com/dmmzqpfgg/video/upload/v1765278020/Uivora_Promotional_Video_480p_ldsrqn.mp4';
-        } else if (quality === '360p') {
-            newUrl = 'https://res.cloudinary.com/dmmzqpfgg/video/upload/v1765278894/Uivora_Promotional_Video_360p_xj0zzm.mp4';
-        }
 
-        loader.classList.remove("hidden");
+        if (!hls) return;
 
-        video.src = newUrl;
-        ghostVideo.src = newUrl; 
-        
-        video.currentTime = currentTime;
-        video.oncanplay = () => {
-            if (!wasPaused) video.play();
-            // Note: Loader 'playing' event se apne aap hat jayega
-            video.oncanplay = null; // Clean up listener
-        };
-        
+        let level = 0; // Auto
+
+        if (quality === "1080p") level = 3;
+        else if (quality === "720p") level = 2;
+        else if (quality === "480p") level = 1;
+        else if (quality === "360p") level = 0;
+
+        hls.currentLevel = level;
+
         closeSettings();
-    };
+      };
 
-    // Initialize Checkmark
-    document.getElementById("check-1080p").style.opacity = "1";
+      // Initialize Checkmark
+      document.getElementById("check-1080p").style.opacity = "1";
 
-    // --- HOVER PREVIEW & DRAG ---
-    progressContainer.addEventListener("mousemove", (e) => {
-      const rect = progressContainer.getBoundingClientRect();
-      const pos = (e.clientX - rect.left) / rect.width; 
-      const hoverTime = Math.max(0, Math.min(pos * video.duration, video.duration));
+      const ghostVideo = document.createElement("video");
+      ghostVideo.muted = true;
 
-      previewTooltip.classList.remove("hidden");
-      previewTooltip.classList.add("flex");
-      
-      let tooltipX = e.clientX - rect.left;
-      if(tooltipX < 80) tooltipX = 80; 
-      if(tooltipX > rect.width - 80) tooltipX = rect.width - 80; 
-      previewTooltip.style.left = `${tooltipX}px`;
-      
-      previewTime.textContent = format(hoverTime);
+      // --- HOVER PREVIEW & DRAG ---
+      progressContainer.addEventListener("mousemove", (e) => {
+        const rect = progressContainer.getBoundingClientRect();
+        const pos = (e.clientX - rect.left) / rect.width;
+        const hoverTime = Math.max(
+          0,
+          Math.min(pos * video.duration, video.duration)
+        );
 
-      if (Number.isFinite(hoverTime)) {
-         ghostVideo.currentTime = hoverTime;
-      }
-    });
+        previewTooltip.classList.remove("hidden");
+        previewTooltip.classList.add("flex");
 
-    ghostVideo.addEventListener("seeked", () => {
-        ctx.drawImage(ghostVideo, 0, 0, previewCanvas.width, previewCanvas.height);
-    });
+        let tooltipX = e.clientX - rect.left;
+        if (tooltipX < 80) tooltipX = 80;
+        if (tooltipX > rect.width - 80) tooltipX = rect.width - 80;
+        previewTooltip.style.left = `${tooltipX}px`;
 
-    progressContainer.addEventListener("mouseleave", () => {
-      previewTooltip.classList.add("hidden");
-      previewTooltip.classList.remove("flex");
-    });
+        previewTime.textContent = format(hoverTime);
 
-    const startDrag = () => { isDragging = true; };
-    const endDrag = () => { isDragging = false; };
+        clearTimeout(previewTimeout);
+        previewTimeout = setTimeout(() => {
+          if (Number.isFinite(hoverTime)) {
+            ghostVideo.currentTime = hoverTime;
+          }
+        }, 50);
+      });
 
-    progress.addEventListener("mousedown", startDrag);
-    progress.addEventListener("touchstart", startDrag);
-    progress.addEventListener("mouseup", endDrag);
-    progress.addEventListener("touchend", endDrag);
+      ghostVideo.addEventListener("seeked", () => {
+        ctx.drawImage(
+          ghostVideo,
+          0,
+          0,
+          previewCanvas.width,
+          previewCanvas.height
+        );
+      });
 
-    progress.addEventListener("input", () => {
-      const percent = progress.value;
-      updateProgressBackground(percent);
-      const seekTime = (percent / 100) * video.duration;
-      time.textContent = `${format(seekTime)} / ${format(video.duration)}`;
-      video.currentTime = seekTime;
-    });
+      progressContainer.addEventListener("mouseleave", () => {
+        previewTooltip.classList.add("hidden");
+        previewTooltip.classList.remove("flex");
+      });
 
-    // --- CONTROLS ---
-    volume.addEventListener("input", () => { video.volume = volume.value; });
+      const startDrag = () => {
+        isDragging = true;
+      };
+      const endDrag = () => {
+        isDragging = false;
+      };
 
-    video.addEventListener("play", () => {
-      bigPlay.style.display = "none";
-      playPause.innerHTML = "<i class='fa-solid fa-pause'></i>";
-      playerContainer.classList.remove("paused");
-    });
+      progress.addEventListener("mousedown", startDrag);
+      progress.addEventListener("touchstart", startDrag);
+      document.addEventListener("mouseup", endDrag);
+      document.addEventListener("touchend", endDrag);
 
-    video.addEventListener("pause", () => {
-      bigPlay.style.display = "flex";
-      playPause.innerHTML = "<i class='fa-solid fa-play ml-1'></i>";
-      playerContainer.classList.add("paused");
-    });
+      progress.addEventListener("input", () => {
+        const percent = progress.value;
+        updateProgressBackground(percent);
+        const seekTime = (percent / 100) * video.duration;
+        time.textContent = `${format(seekTime)} / ${format(video.duration)}`;
+        video.currentTime = seekTime;
+      });
 
-    playPause.onclick = togglePlay;
-    bigPlay.onclick = togglePlay;
-    video.onclick = togglePlay;
-    
-    document.getElementById("back10").onclick = (e) => { e.stopPropagation(); video.currentTime -= 10; };
-    document.getElementById("forward10").onclick = (e) => { e.stopPropagation(); video.currentTime += 10; };
+      // --- CONTROLS ---
+      volume.addEventListener("input", () => {
+        video.volume = volume.value;
+      });
 
-    // --- KEYBOARD SHORTCUTS ---
-    document.addEventListener("keydown", (e) => {
+      video.addEventListener("play", () => {
+        bigPlay.style.display = "none";
+        playPause.innerHTML = "<i class='fa-solid fa-pause'></i>";
+        playerContainer.classList.remove("paused");
+      });
+
+      video.addEventListener("pause", () => {
+        bigPlay.style.display = "flex";
+        playPause.innerHTML = "<i class='fa-solid fa-play ml-1'></i>";
+        playerContainer.classList.add("paused");
+      });
+
+      playPause.onclick = togglePlay;
+      bigPlay.onclick = togglePlay;
+      video.onclick = togglePlay;
+
+      document.getElementById("back10").onclick = (e) => {
+        e.stopPropagation();
+        video.currentTime -= 10;
+      };
+      document.getElementById("forward10").onclick = (e) => {
+        e.stopPropagation();
+        video.currentTime += 10;
+      };
+
+      // --- KEYBOARD SHORTCUTS ---
+      document.addEventListener("keydown", (e) => {
         // Agar focus kisi input par nahi hai tabhi kaam kare
         if (e.target.tagName === "INPUT") return;
 
-        switch(e.key) {
-            case "ArrowLeft":
-                video.currentTime -= 10;
-                break;
-            case "ArrowRight":
-                video.currentTime += 10;
-                break;
-            case " ": // Spacebar se Play/Pause (Bonus)
-                e.preventDefault(); // Page scroll hone se rokne ke liye
-                togglePlay();
-                break;
+        switch (e.key) {
+          case "ArrowLeft":
+            video.currentTime -= 10;
+            break;
+          case "ArrowRight":
+            video.currentTime += 10;
+            break;
+          case " ": // Spacebar se Play/Pause (Bonus)
+            e.preventDefault(); // Page scroll hone se rokne ke liye
+            togglePlay();
+            break;
         }
-    });
-
-  </script>
-
-</body>
+      });
+    </script>
+  </body>
 </html>
